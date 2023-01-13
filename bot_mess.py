@@ -21,3 +21,7 @@ def bot_mess_keyboard_input():
     bot_mess: str = 'Введите данные в формате ' \
                     '\nИмя Фамилия Телефон Комментарий'
     return bot_mess
+
+def bot_mess_file_input():
+    bot_mess: str = 'Выберите формат загружаемого файла'
+    return bot_mess

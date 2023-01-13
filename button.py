@@ -30,6 +30,15 @@ def but_inline_init():
     markup.add(but_1, but_2)
     return markup
 
+def but_inline_format_file():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    but_1 = types.InlineKeyboardButton(emoji.emojize(':triangular_ruler: .csv'),
+                                       callback_data='csv')
+    but_2 = types.InlineKeyboardButton(emoji.emojize(':spider_web: .html'),
+                                       callback_data='html')
+    markup.add(but_1, but_2)
+    return markup
+
 # def but_inline_return():
 #     markup = types.InlineKeyboardMarkup(row_width=1)
 #     but_1 = types.InlineKeyboardButton(emoji.emojize(':BACK_arrow: вернутся назад'),
