@@ -33,3 +33,13 @@ def bot_mess_view_all():
         row = ' '.join(data_array[i])
         bot_mess += row + '\n'
     return bot_mess
+
+
+def bot_mess_view_row(index_row):
+    data_array = read_file()
+    bot_mess: str = ''
+    if index_row < len(data_array):
+        bot_mess = ' '.join(data_array[index_row])
+    else:
+        bot_mess = 'Такой записи нету'
+    return bot_mess
