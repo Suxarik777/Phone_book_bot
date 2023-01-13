@@ -1,4 +1,4 @@
-from telebot import TeleBot, types
+from func_for_file import read_file
 
 
 def bot_mess_start(msg):
@@ -24,4 +24,12 @@ def bot_mess_keyboard_input():
 
 def bot_mess_file_input():
     bot_mess: str = 'Выберите формат загружаемого файла'
+    return bot_mess
+
+def bot_mess_view_all():
+    data_array = read_file()
+    bot_mess: str = ''
+    for i in range(len(data_array)):
+        row = ' '.join(data_array[i])
+        bot_mess += row + '\n'
     return bot_mess

@@ -4,8 +4,8 @@ from config import TOKEN_ID
 import emoji
 import os
 from bot_mess import bot_mess_start, bot_mess_menu, bot_mess_input, bot_mess_keyboard_input, \
-    bot_mess_file_input
-from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file
+    bot_mess_file_input, bot_mess_view_all
+from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file, but_inline_view
 from func_for_file import read_file, recording_file
 from input import input_keyboard, input_file_user_to_array, input_new_array_user_to_data_array
 from check import input_new_number_new_row
@@ -33,13 +33,29 @@ def menu(msg: types.Message):
                          reply_markup=but_menu())
 
     # Меню 2 уровня
+    if msg.text == emoji.emojize(':eyes: Посмотреть данные'): # view
+        bot.send_message(chat_id=msg.chat.id, text='Что посмотрим', reply_markup=but_inline_view())
+
     if msg.text == emoji.emojize(':writing_hand: Ввести данные'): # init
         bot.send_message(chat_id=msg.chat.id, text=bot_mess_input(), parse_mode='html',
                          reply_markup=but_inline_init())
 
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_init(call: types.CallbackQuery):
+    # обработка view
+    if call.data == 'номер записи':
+        bot.send_message(chat_id=call.message.chat.id, text='УПС.\n В разработке')
+
+    if call.data == 'искать':
+        bot.send_message(chat_id=call.message.chat.id, text='УПС.\n В разработке')
+
+    if call.data == 'смотреть всех':
+        bot.send_message(chat_id=call.message.chat.id, text=bot_mess_view_all(),
+                         reply_markup=but_menu())
+
+    # обработка init
     if call.data == 'с клавиатуры':
         msg = bot.send_message(chat_id=call.message.chat.id, text=bot_mess_keyboard_input())
         bot.register_next_step_handler(msg, recording_str_keyboard)

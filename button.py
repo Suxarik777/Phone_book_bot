@@ -39,6 +39,18 @@ def but_inline_format_file():
     markup.add(but_1, but_2)
     return markup
 
+
+def but_inline_view():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    but_1 = types.InlineKeyboardButton(emoji.emojize(':person_tipping_hand: по номеру записи'),
+                                       callback_data='номер записи')
+    but_2 = types.InlineKeyboardButton(emoji.emojize(':man_detective: искать'),
+                                       callback_data='искать')
+    but_3 = types.InlineKeyboardButton(emoji.emojize(':family_man_woman_girl_boy: смотреть всех'),
+                                       callback_data='смотреть всех')
+    markup.add(but_1, but_2, but_3)
+    return markup
+
 # def but_inline_return():
 #     markup = types.InlineKeyboardMarkup(row_width=1)
 #     but_1 = types.InlineKeyboardButton(emoji.emojize(':BACK_arrow: вернутся назад'),
