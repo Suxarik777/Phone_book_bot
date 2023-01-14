@@ -43,3 +43,15 @@ def bot_mess_view_row(index_row):
     else:
         bot_mess = 'Такой записи нету'
     return bot_mess
+
+
+def bot_mess_view_row_filter(text):
+    data_array = read_file()
+    bot_mess: str = ''
+    for line in range(len(data_array)):
+        for row in range(len(data_array[line])):
+            # print(arr[line][row])
+            if data_array[line][row].find(text) > -1:
+                show_row = ' '.join(data_array[line])
+                bot_mess += f'{show_row}\n'
+    return bot_mess

@@ -4,7 +4,7 @@ from config import TOKEN_ID
 import emoji
 import os
 from bot_mess import bot_mess_start, bot_mess_menu, bot_mess_input, bot_mess_keyboard_input, \
-    bot_mess_file_input, bot_mess_view_all, bot_mess_view_row
+    bot_mess_file_input, bot_mess_view_all, bot_mess_view_row, bot_mess_view_row_filter
 from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file, but_inline_view
 from func_for_file import read_file, recording_file
 from input import input_keyboard, input_file_user_to_array, input_new_array_user_to_data_array
@@ -50,7 +50,9 @@ def callback_init(call: types.CallbackQuery):
         bot.register_next_step_handler(msg, view_row_index)
 
     if call.data == 'искать':
-        bot.send_message(chat_id=call.message.chat.id, text='УПС.\n В разработке')
+        msg = bot.send_message(chat_id=call.message.chat.id, text='Введите слово или номер по которому ищем')
+        bot.register_next_step_handler(msg, view_row_search_filter)
+
 
     if call.data == 'смотреть всех':
         bot.send_message(chat_id=call.message.chat.id, text=bot_mess_view_all(),
@@ -91,6 +93,12 @@ def view_row_index(msg: types.Message):
         bot.send_message(chat_id=msg.chat.id, text='Что-то пошло не так!'
                                                    '\nНаверное вы указали не число',
                          reply_markup=but_menu())
+
+
+# 2 шаг после view 'искать'
+def view_row_search_filter(msg: types.Message):
+    text = str(msg.text)
+    bot.send_message(chat_id=msg.chat.id, text=bot_mess_view_row_filter(text), reply_markup=but_menu())
 
 
 # 2 шаг после input 'с клавиатуры' - результат
