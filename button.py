@@ -61,6 +61,16 @@ def but_inline_edit_two_step():
     markup.add(but_1, but_2)
     return markup
 
+def but_inline_export():
+    markup = types.InlineKeyboardMarkup(row_width=3)
+    but_1 = types.InlineKeyboardButton(emoji.emojize(':triangular_ruler: .csv'),
+                                       callback_data='csv_export')
+    but_2 = types.InlineKeyboardButton(emoji.emojize(':spider_web: .html'),
+                                       callback_data='html_export')
+    but_3 = types.InlineKeyboardButton(emoji.emojize(':cross_mark_button: .xml'),
+                                       callback_data='xml_export')
+    markup.add(but_1, but_2, but_3)
+    return markup
 
 # def but_inline_return():
 #     markup = types.InlineKeyboardMarkup(row_width=1)

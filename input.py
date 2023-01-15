@@ -6,7 +6,7 @@ def input_keyboard(text):
     data_sub_list = text.split()
     data_array = read_file()
     data_array.append(data_sub_list)
-    data_array = input_new_number_new_row(data_array)  # впиши новый номер строки последней строки
+    # data_array = input_new_number_new_row(data_array)  # впиши новый номер строки последней строки
     return data_array
 
 
@@ -26,18 +26,18 @@ def input_new_array_user_to_data_array(new_array_user):
     for line in new_array_user:
         data_array.append(line)
     return data_array
-
-
-# Функции 2 шага обработки
-def input_new_number_new_row(array):
-    new_number_row = what_is_row_new_database_entry(array)
-    last_index = len(array) - 1
-    last_sub_list = array[last_index]
-
-    new_sub_list = forced_recording_number_row_database(last_sub_list, new_number_row)
-
-    array.insert(0, new_sub_list)
-    return array
+#
+#
+# # Функции 2 шага обработки
+# def input_new_number_new_row(array):
+#     new_number_row = what_is_row_new_database_entry(array)
+#     last_index = len(array) - 1
+#     last_sub_list = array[last_index]
+#
+#     new_sub_list = forced_recording_number_row_database(last_sub_list, new_number_row)
+#
+#     array.insert(0, new_sub_list)
+#     return array
 
 # не реализовано
 # def input_new_numbers_new_row_is_file(array, new_array_user):

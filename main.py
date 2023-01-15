@@ -7,10 +7,11 @@ from bot_mess import bot_mess_start, bot_mess_menu, bot_mess_input, bot_mess_key
     bot_mess_file_input, bot_mess_view_all, bot_mess_view_row, bot_mess_view_row_filter, \
     bot_mess_edit, bot_mess_edit_two_step
 from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file, but_inline_view, \
-    but_inline_edit_two_step
+    but_inline_edit_two_step, but_inline_export
 from func_for_file import read_file, recording_file
 from input import input_keyboard, input_file_user_to_array, input_new_array_user_to_data_array
 from edit import delete_row, update_row
+from export import export_csv, export_html, export_xml
 from check import input_new_number_new_row
 
 
@@ -50,6 +51,10 @@ def menu(msg: types.Message):
 
         msg = bot.send_message(chat_id=msg.chat.id, text=bot_mess_edit(), parse_mode='html')
         bot.register_next_step_handler(msg, edit_two_step)
+
+    if msg.text == emoji.emojize(':card_index_dividers: Экспорт в файл'):
+        bot.send_message(chat_id=msg.chat.id, text='Выберите формат', reply_markup=but_inline_export())
+
 
 
 # меню 2 уровня edit
@@ -109,12 +114,28 @@ def callback_init(call: types.CallbackQuery):
                          reply_markup=but_menu())
 
     if call.data == 'редактировать':
-        id_ = call.from_user.id
-
         msg = bot.send_message(chat_id=call.message.chat.id, text=bot_mess_keyboard_input(),
                          reply_markup=but_menu())
         bot.register_next_step_handler(msg, update_str_keyboard)
 
+    # export
+    if call.data == 'csv_export':
+        name_file = 'data_base_request_user'
+        export_csv(name_file)
+        csv_doc = open(f'{name_file}.csv', 'rb')
+        bot.send_document(chat_id=call.message.chat.id, document=csv_doc)
+
+    if call.data == 'html_export':
+        name_file = 'data_base_request_user'
+        export_html(name_file)
+        html_doc = open(f'{name_file}.html', 'rb')
+        bot.send_document(chat_id=call.message.chat.id, document=html_doc)
+
+    if call.data == 'xml_export':
+        name_file = 'data_base_request_user'
+        export_xml(name_file)
+        xml_doc = open(f'{name_file}.xml', 'rb')
+        bot.send_document(chat_id=call.message.chat.id, document=xml_doc)
 
 # 2 шаг после view 'номер записи'
 def view_row_index(msg: types.Message):
