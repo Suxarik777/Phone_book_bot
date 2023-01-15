@@ -18,7 +18,7 @@ def bot_mess_input():
     return bot_mess
 
 def bot_mess_keyboard_input():
-    bot_mess: str = 'Введите данные в формате ' \
+    bot_mess: str = 'Введите данные в формате' \
                     '\nИмя Фамилия Телефон Комментарий'
     return bot_mess
 
@@ -55,3 +55,27 @@ def bot_mess_view_row_filter(text):
                 show_row = ' '.join(data_array[line])
                 bot_mess += f'{show_row}\n'
     return bot_mess
+
+
+def bot_mess_edit():
+    bot_mess: str = 'Введите номер строки записи'
+    return bot_mess
+
+
+def bot_mess_edit_two_step(row_number_str):
+    data_array = read_file()
+
+    if row_number_str.isdigit():
+        row_numb_index = int(row_number_str) - 1
+        if row_numb_index < len(data_array):
+            row_str = ' '.join(map(str, data_array[row_numb_index]))  # парс вложенного листа в строку
+            bot_mess = f'Что вы хотите сделать с записью? :\n<b>{row_str}</b>'
+            return bot_mess
+        else:
+            bot_mess = 'Упс, такой записи нет'
+            return bot_mess
+    else:
+        bot_mess = 'Похоже вы указали не число'
+        return bot_mess
+
+

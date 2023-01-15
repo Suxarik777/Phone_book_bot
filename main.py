@@ -4,10 +4,13 @@ from config import TOKEN_ID
 import emoji
 import os
 from bot_mess import bot_mess_start, bot_mess_menu, bot_mess_input, bot_mess_keyboard_input, \
-    bot_mess_file_input, bot_mess_view_all, bot_mess_view_row, bot_mess_view_row_filter
-from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file, but_inline_view
+    bot_mess_file_input, bot_mess_view_all, bot_mess_view_row, bot_mess_view_row_filter, \
+    bot_mess_edit, bot_mess_edit_two_step
+from button import but_start_menu, but_menu, but_inline_init, but_inline_format_file, but_inline_view, \
+    but_inline_edit_two_step
 from func_for_file import read_file, recording_file
 from input import input_keyboard, input_file_user_to_array, input_new_array_user_to_data_array
+from edit import delete_row, update_row
 from check import input_new_number_new_row
 
 
@@ -18,6 +21,8 @@ TOKEN = TOKEN_ID
 bot = TeleBot(TOKEN)
 
 os.chdir(os.path.dirname(__file__))
+
+dct = {}
 
 @bot.message_handler(commands=['start'])
 def start_program(msg: types.Message):
@@ -36,10 +41,25 @@ def menu(msg: types.Message):
     if msg.text == emoji.emojize(':eyes: Посмотреть данные'): # view
         bot.send_message(chat_id=msg.chat.id, text='Что посмотрим', reply_markup=but_inline_view())
 
-    if msg.text == emoji.emojize(':writing_hand: Ввести данные'): # init
+    if msg.text == emoji.emojize(':writing_hand: Ввести данные'): # input
         bot.send_message(chat_id=msg.chat.id, text=bot_mess_input(), parse_mode='html',
                          reply_markup=but_inline_init())
 
+    if msg.text == emoji.emojize(':backhand_index_pointing_right: Редактировать'): # edit
+        dct[msg.from_user.id] = []  # при переходе в меню по его айди словарика кладём/обнуляем пустой список
+
+        msg = bot.send_message(chat_id=msg.chat.id, text=bot_mess_edit(), parse_mode='html')
+        bot.register_next_step_handler(msg, edit_two_step)
+
+
+# меню 2 уровня edit
+def edit_two_step(msg: types.Message):
+    row_number_str = msg.text
+    id_= msg.from_user.id
+    dct[id_].append(row_number_str)
+
+    bot.send_message(chat_id=msg.chat.id, text=bot_mess_edit_two_step(row_number_str),
+                         parse_mode='html', reply_markup=but_inline_edit_two_step())
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -58,7 +78,7 @@ def callback_init(call: types.CallbackQuery):
         bot.send_message(chat_id=call.message.chat.id, text=bot_mess_view_all(),
                          reply_markup=but_menu())
 
-    # обработка init
+    # обработка input
     if call.data == 'с клавиатуры':
         msg = bot.send_message(chat_id=call.message.chat.id, text=bot_mess_keyboard_input())
         bot.register_next_step_handler(msg, recording_str_keyboard)
@@ -79,6 +99,21 @@ def callback_init(call: types.CallbackQuery):
                                                             '\nТолько не говорите преподавателю '
                                                             ':shushing_face:'),
                          reply_markup=but_menu())
+
+    # обработка edit второй шаг
+    if call.data == 'удалить':
+        id_ = call.from_user.id
+
+        bot_mess = delete_row(dct[id_])  # func from edit
+        bot.send_message(chat_id=call.message.chat.id, text=bot_mess,
+                         reply_markup=but_menu())
+
+    if call.data == 'редактировать':
+        id_ = call.from_user.id
+
+        msg = bot.send_message(chat_id=call.message.chat.id, text=bot_mess_keyboard_input(),
+                         reply_markup=but_menu())
+        bot.register_next_step_handler(msg, update_str_keyboard)
 
 
 # 2 шаг после view 'номер записи'
@@ -109,7 +144,16 @@ def recording_str_keyboard(msg: types.Message):
     bot.send_message(chat_id=msg.chat.id, text='Новые данные записаны', reply_markup=but_menu())
 
 
+# 3 шаг edit редактирова
+def update_str_keyboard(msg: types.Message):
+    text = msg.text
+    dct_user_id_lst = dct[msg.from_user.id]
+    index_str = dct_user_id_lst[0]
 
+    data_array = update_row(index_str, text)
+    recording_file(data_array)
+
+    bot.send_message(chat_id=msg.chat.id, text='Данные обновлены', reply_markup=but_menu())
 
 # 3 шаг input из файла
 @bot.message_handler(content_types=['documents'])

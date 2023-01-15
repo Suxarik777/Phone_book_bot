@@ -51,6 +51,17 @@ def but_inline_view():
     markup.add(but_1, but_2, but_3)
     return markup
 
+
+def but_inline_edit_two_step():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    but_1 = types.InlineKeyboardButton(emoji.emojize(':wastebasket: удалить'),
+                                       callback_data='удалить')
+    but_2 = types.InlineKeyboardButton(emoji.emojize(':pen: редактировать'),
+                                       callback_data='редактировать')
+    markup.add(but_1, but_2)
+    return markup
+
+
 # def but_inline_return():
 #     markup = types.InlineKeyboardMarkup(row_width=1)
 #     but_1 = types.InlineKeyboardButton(emoji.emojize(':BACK_arrow: вернутся назад'),
